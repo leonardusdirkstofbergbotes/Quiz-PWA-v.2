@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row row justify-space-around>
+        <v-row v-if="optionSelect" row justify-space-around>
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
             </v-col>
@@ -40,23 +40,20 @@ export default {
 
     data () {
         return {
+            optionSelect: true,
             cat: this.category,
             quizes: [],
             QuizArrayLength: '',
-            difficultyOptions: ['Easy', 'Medium', 'Hard'],
-            difficulty: "Easy",
+            difficultyOptions: ['easy', 'medium', 'hard'],
+            difficulty: "easy",
             number: 10,
             questionNumbers: [10, 15, 20, 25],
-            questionType: 'Multiple',
-            questionTypeOptions: ['Any','Multiple', 'True or False']
+            questionTypeOptions: ['any','multiple', 'True or False'],
+            questionType: 'multiple'
         }
     },
 
     watch: {
-        // category (value) {
-        //     this.cat = value
-        // },
-
         category (value) {
             if (value == 'Sport') {
                 this.cat = 21
@@ -77,8 +74,9 @@ export default {
 
     methods: {
         getQuestions () {
-            this.$http.get('https://opentdb.com/api.php?amount=15&category=21&difficulty=easy&type=multiple')
+            this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
+                console.log(response)
                 var i = 0
                 var n = 0
             while (i < response.data.results.length) { // goes into each object
@@ -107,6 +105,7 @@ export default {
             }
                 
             })
+            this.optionSelect = false
         }
     }
 
