@@ -30,6 +30,14 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-divider></v-divider>
+
+        <v-list-item v-for="item in categories" :key="item.name" link :to="'/quiz/' + item.link"> <!-- Link to categories -->
+          <v-list-item-content>
+            <v-list-item-title>{{item.name}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
       </v-list> <!-- Side bar ends -->
     </v-navigation-drawer>
 
@@ -52,11 +60,14 @@
 
 <script>
   export default {
-    props: {
-      source: String,
-    },
     data: () => ({
       drawer: null,
+      categories: [
+        {name: 'Sport', link: 'Sport'},
+        {name: 'General Know', link: 'General Knowledge'},
+        {name: 'Animals', link: 'Animals'},
+        {name: 'Celebrites', link: 'Celebrites'}
+      ]
     }),
   }
 </script>

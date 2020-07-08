@@ -10,18 +10,6 @@
 <script>
 
 export default {
-  // created() {
-  //   console.log('created')
-  //   this.$http.get('https://opentdb.com/api.php?amount=15&category=21&difficulty=easy&type=multiple')
-  //     .then(response => {
-  //       var i = 0
-  //      while (i < response.data.results.length) {
-  //        this.quizes.push(response.data.results[i])
-  //        i++
-  //      }
-        
-  //     })
-  // },
   name: 'Home',
 
   data () {
