@@ -24,6 +24,18 @@
 export default {
     name: 'QuizPage',
 
+    created () {
+        if (this.category == 'Sport') {
+            this.cat = 21
+        } else if (this.category == 'General Knowledge') {
+            this.cat = 9
+        } else if (this.category == 'Animals') {
+            this.cat = 27
+        } else if (this.category == 'Celebrities') {
+            this.cat = 26
+        }
+    },
+
     props: ['category'],
 
     data () {
@@ -41,8 +53,21 @@ export default {
     },
 
     watch: {
+        // category (value) {
+        //     this.cat = value
+        // },
+
         category (value) {
-            this.cat = value
+            if (value == 'Sport') {
+                this.cat = 21
+            } else if (value == 'General Knowledge') {
+                this.cat = 9
+            } else if (value == 'Animals') {
+                this.cat = 27
+            } else if (value == 'Celebrities') {
+                this.cat = 26
+            }
+            
         },
 
         quizes (value) { 

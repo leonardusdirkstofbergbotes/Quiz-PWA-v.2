@@ -66,7 +66,7 @@
         {name: 'Sport', link: 'Sport'},
         {name: 'General Know', link: 'General Knowledge'},
         {name: 'Animals', link: 'Animals'},
-        {name: 'Celebrites', link: 'Celebrites'}
+        {name: 'Celebrities', link: 'Celebrities'}
       ]
     }),
   }
