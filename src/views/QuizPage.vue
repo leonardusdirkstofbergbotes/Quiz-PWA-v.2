@@ -76,23 +76,24 @@ export default {
         getQuestions () {
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
-                console.log(response)
                 var i = 0
                 var n = 0
             while (i < response.data.results.length) { // goes into each object
                 let questionArray = []
                 while (n < 3) { // goes into the current objects sub array 
-                var possible = {
-                    question: response.data.results[i].incorrect_answers[n],
-                    correct: false
-                }
-                questionArray.push(possible)
-                n++
-                }
+                    var possible = {
+                        question: response.data.results[i].incorrect_answers[n],
+                        correct: false
+                    }
+                    questionArray.push(possible)
+                    n++
+                } // while loop from incorrect answers ends
+
                 possible = { 
-                question: response.data.results[i].correct_answer,
-                correct: true
+                    question: response.data.results[i].correct_answer,
+                    correct: true
                 }
+
                 questionArray.push(possible)
                 const question = { // an object that contains each specific question
                 num: i, 
@@ -102,10 +103,10 @@ export default {
                 this.quizes.push(question) // store each object inside an array
                 i++
                 n = 0 // reset the sub array numbering
-            }
+            } // while loop from individual question object ends
                 
             })
-            this.optionSelect = false
+            this.optionSelect = false // hides the option bar
         }
     }
 
