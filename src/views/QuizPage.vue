@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row v-if="optionSelect" row justify-space-around>
+        <v-row v-if="optionSelect" row justify-space-around> <!-- Bar that lets you choose the options -->
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
             </v-col>
@@ -16,7 +16,20 @@
             <v-col>
                     <v-btn block @click="getQuestions">GO</v-btn>
             </v-col>
-        </v-row>
+        </v-row> <!-- Option bar ends -->
+
+        <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
+            <v-flex >
+                <h1 class="text-center">{{quizes[num].num}}. {{quizes[num].name}}</h1> <!-- Question number and title -->
+
+                <v-layout row justify-space-between> <!-- contains the possible answers -->
+                    <v-card width="250" min-height="150" v-for="item in quizes[num].questions" :key="item" @click="storeAnswer(item.correct)" >
+                        {{item.question}}
+                    </v-card>
+                </v-layout>
+
+            </v-flex>
+        </v-container>
     </div>
 </template>
 
@@ -89,7 +102,8 @@ export default {
             number: 10,
             questionNumbers: [10, 15, 20, 25],
             questionTypeOptions: ['any','multiple', 'True or False'],
-            questionType: 'multiple'
+            questionType: 'multiple',
+            num: 0
         }
     },
 
@@ -153,6 +167,11 @@ export default {
     },
 
     methods: {
+        storeAnswer(answer) {
+            console.log(answer)
+            this.num++
+        },
+
         getQuestions () {
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
@@ -176,7 +195,7 @@ export default {
 
                 questionArray.push(possible)
                 const question = { // an object that contains each specific question
-                num: i, 
+                num: i + 1, 
                 questions: questionArray,
                 name: response.data.results[i].question
                 }
