@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-space-around>
-      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :key="card.category" outlined class="hoverMe">
-            <v-img height="300" :src="card.img"></v-img>
+      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :key="card.category" outlined class="hoverMe ma-4">
+            <v-img contain height="300" :src="require(`@/assets/thumbs/${card.img}.webp`)"></v-img>
             <v-card-title class="justify-center">{{card.category}}</v-card-title>
       </v-card>
   </v-layout>
@@ -15,10 +15,26 @@ export default {
   data () {
     return {
       quizCards: [
-        {category: 'Sport', img: 'https://previews.123rf.com/images/macrovector/macrovector1503/macrovector150300795/37811640-sport-equipment-concept-with-competitive-games-accessories-and-sportswear-vector-illustration.jpg', free: true},
-        {category: 'General Knowledge', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSXSKPd9ZyWIECQrdISGkY_ZxVYb6_-JTm1KA&usqp=CAU', free: true},
-        {category: 'Animals', img: 'https://image.freepik.com/free-vector/funny-collection-hand-drawn-animals_23-2147602713.jpg', free: true},
-        {category: 'Celebrities', img: 'https://thumbs.dreamstime.com/z/celebrities-couple-walking-red-carpet-vector-illustration-people-marriage-two-actor-wedding-70223496.jpg', free: true}
+        {category: 'Sport', img: 'sports', free: true},
+        {category: 'General Knowledge', img: 'generalKnowledge', free: true},
+        {category: 'Animals', img: 'animals', free: true},
+        {category: 'Celebrities', img: 'celebrities', free: true},
+        {category: 'Books', img: 'books', free: false},
+        {category: 'Movies', img: 'movies', free: false},
+        {category: 'Vehicles', img: 'vehicles', free: false},
+        {category: 'Historical', img: 'historical', free: false},
+        {category: 'Maths', img: 'maths', free: false},
+        {category: 'Music', img: 'music', free: false},
+        {category: 'Myths', img: 'myths', free: false},
+        {category: 'Video Games', img: 'videoGames', free: false},
+        {category: 'Theatre', img: 'theatre', free: false},
+        {category: 'Science', img: 'science', free: false},
+        {category: 'Politics', img: 'politics', free: false},
+        {category: 'Geography', img: 'geography', free: false},
+        {category: 'Computers', img: 'computers', free: false},
+        {category: 'Comics', img: 'comics', free: false},
+        {category: 'Art', img: 'art', free: false},
+        {category: 'Anime', img: 'anime', free: false},
       ]
     }
   },
