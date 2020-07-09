@@ -29,16 +29,15 @@
                 <h1 class="text-center">{{quizes[num].num}}. {{quizes[num].name}}</h1> <!-- Question number and title -->
 
                 <v-layout row justify-space-between> <!-- contains the possible answers -->
-                    <v-card width="250" min-height="150" v-for="item in quizes[num].questions" :key="item" @click="storeAnswer(item.correct)" >
+                    <v-card width="250" min-height="150" v-for="item in shuffleArray" :key="item" @click="storeAnswer(item.correct)" >
                         {{item.question}}
                     </v-card>
                 </v-layout>
 
-               <v-dialog v-model="dialog" persistent max-width="290">
+               <v-dialog v-model="dialog" persistent max-width="350">
                     <v-card>
-                        <v-card-title class="headline">That is incorrect</v-card-title>
-                        <v-card-text>The Correct answer is</v-card-text>
-                        <v-card-subtitle>{{correctAnswer.question}}</v-card-subtitle>
+                        <v-card-title class="headline">The Correct answer is</v-card-title>
+                        <v-card-text>{{correctAnswer.question}}</v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="green darken-1" text @click="dialog = false, num++">Next Question</v-btn>
@@ -123,6 +122,7 @@ export default {
             questionType: 'multiple',
             num: 0,
             dialog: false,
+            // shuffledArray: shuffleArray(quizes)
         }
     },
 
@@ -188,6 +188,18 @@ export default {
     computed: {
         correctAnswer () {
            return this.quizes[this.num].questions.find(e => e.correct === true); // { name: 'apples', quantity: 2 }  
+        },
+
+        shuffleArray(a,b,c,d) {
+            // for (let i = this.quizes[this.num].questions.length - 1; i > 0; i--) {
+            //     const j = Math.floor(Math.random() * (i + 1));
+            //    let results =  [this.quizes[this.num].questions[i], this.quizes[this.num].questions[j]] = [this.quizes[this.num].questions[j], this.quizes[this.num].questions[i]];
+            //     return results
+            //array,placeholder,placeholder,placeholder
+            var a = this.quizes[this.num].questions
+               let results =  c=a.length;while(c)b=Math.random()*c--|0,d=a[c],a[c]=a[b],a[b]=d
+               return a
+            
         }
     },
 
