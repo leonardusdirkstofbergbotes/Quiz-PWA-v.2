@@ -27,6 +27,7 @@ export default {
         {category: 'Music', img: 'music', free: false},
         {category: 'Myths', img: 'myths', free: false},
         {category: 'Video Games', img: 'videoGames', free: false},
+        {category: 'Board Games', img: 'boardGames', free: false},
         {category: 'Theatre', img: 'theatre', free: false},
         {category: 'Science', img: 'science', free: false},
         {category: 'Politics', img: 'politics', free: false},
@@ -35,6 +36,9 @@ export default {
         {category: 'Comics', img: 'comics', free: false},
         {category: 'Art', img: 'art', free: false},
         {category: 'Anime', img: 'anime', free: false},
+        {category: 'TV', img: 'tv', free: false},
+        {category: 'Gadgets', img: 'gadgets', free: false},
+        {category: 'Cartoons', img: 'cartoon', free: false},
       ]
     }
   },

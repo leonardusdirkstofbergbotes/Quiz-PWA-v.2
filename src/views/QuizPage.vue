@@ -24,7 +24,7 @@
 export default {
     name: 'QuizPage',
 
-    created () {
+    created () { // sets the code of the category
         if (this.category == 'Sport') {
             this.cat = 21
         } else if (this.category == 'General Knowledge') {
@@ -33,7 +33,47 @@ export default {
             this.cat = 27
         } else if (this.category == 'Celebrities') {
             this.cat = 26
-        }
+        } else if (this.category == 'Books') {
+            this.cat = 10
+        } else if (this.category == 'Movies') {
+            this.cat = 11
+        } else if (this.category == 'Music') {
+            this.cat = 12
+        } else if (this.category == 'Theatre') {
+            this.cat = 13
+        } else if (this.category == 'TV') {
+            this.cat = 14
+        } else if (this.category == 'Video Games') {
+            this.cat = 15
+        } else if (this.category == 'Board Games') {
+            this.cat = 16
+        } else if (this.category == 'Science') {
+            this.cat = 17
+        }  else if (this.category == 'Computers') {
+            this.cat = 18
+        } else if (this.category == 'Maths') {
+            this.cat = 19
+        } else if (this.category == 'Myths') {
+            this.cat = 20
+        } else if (this.category == 'Geography') {
+            this.cat = 22
+        } else if (this.category == 'Historical') {
+            this.cat = 23
+        } else if (this.category == 'Politics') {
+            this.cat = 24
+        } else if (this.category == 'Art') {
+            this.cat = 25
+        } else if (this.category == 'Vehicles') {
+            this.cat = 28
+        } else if (this.category == 'Comics') {
+            this.cat = 29
+        } else if (this.category == 'Gadgets') {
+            this.cat = 30
+        } else if (this.category == 'Anime') {
+            this.cat = 31
+        } else if (this.category == 'Cartoons') {
+            this.cat = 32
+        } 
     },
 
     props: ['category'],
@@ -54,7 +94,7 @@ export default {
     },
 
     watch: {
-        category (value) {
+        category (value) { // Also sets the code of the category
             if (value == 'Sport') {
                 this.cat = 21
             } else if (value == 'General Knowledge') {
@@ -63,7 +103,47 @@ export default {
                 this.cat = 27
             } else if (value == 'Celebrities') {
                 this.cat = 26
-            }
+            } else if (value == 'Books') {
+                this.cat = 10
+            } else if (value == 'Movies') {
+                this.cat = 11
+            } else if (value == 'Music') {
+                this.cat = 12
+            } else if (value == 'Theatre') {
+                this.cat = 13
+            } else if (value == 'TV') {
+                this.cat = 14
+            } else if (value == 'Video Games') {
+                this.cat = 15
+            } else if (value == 'Board Games') {
+                this.cat = 16
+            } else if (value == 'Science') {
+                this.cat = 17
+            }  else if (value == 'Computers') {
+                this.cat = 18
+            } else if (value == 'Maths') {
+                this.cat = 19
+            } else if (value == 'Myths') {
+                this.cat = 20
+            } else if (value == 'Geography') {
+                this.cat = 22
+            } else if (value == 'Historical') {
+                this.cat = 23
+            } else if (value == 'Politics') {
+                this.cat = 24
+            } else if (value == 'Art') {
+                this.cat = 25
+            } else if (value == 'Vehicles') {
+                this.cat = 28
+            } else if (value == 'Comics') {
+                this.cat = 29
+            } else if (value == 'Gadgets') {
+                this.cat = 30
+            } else if (value == 'Anime') {
+                this.cat = 31
+            } else if (value == 'Cartoons') {
+                this.cat = 32
+            } 
             
         },
 
