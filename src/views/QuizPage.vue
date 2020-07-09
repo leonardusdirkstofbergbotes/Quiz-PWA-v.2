@@ -1,5 +1,11 @@
 <template>
     <div>
+         <audio id="wrong" preload="auto">
+            <source src="@/assets/sounds/fail.mp3"></source>
+        </audio>
+        <audio id="right" preload="auto">
+            <source src="@/assets/sounds/correct.mp3"></source>
+        </audio>
         <v-row v-if="optionSelect" row justify-space-around> <!-- Bar that lets you choose the options -->
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
@@ -168,8 +174,15 @@ export default {
 
     methods: {
         storeAnswer(answer) {
-            console.log(answer)
-            this.num++
+            var wrong = document.getElementById('wrong')
+            var right = document.getElementById('right')
+            if (answer == false) {
+                wrong.play()
+            } else if (answer == true) {
+                right.play()
+            }
+            
+        
         },
 
         getQuestions () {
