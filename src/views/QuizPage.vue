@@ -34,6 +34,18 @@
                     </v-card>
                 </v-layout>
 
+               <v-dialog v-model="dialog" persistent max-width="290">
+                    <v-card>
+                        <v-card-title class="headline">That is incorrect</v-card-title>
+                        <v-card-text>The Correct answer is</v-card-text>
+                        <v-card-subtitle>{{correctAnswer.question}}</v-card-subtitle>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="dialog = false, num++">Next Question</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    </v-dialog>
+
             </v-flex>
         </v-container>
     </div>
@@ -109,7 +121,8 @@ export default {
             questionNumbers: [10, 15, 20, 25],
             questionTypeOptions: ['any','multiple', 'True or False'],
             questionType: 'multiple',
-            num: 0
+            num: 0,
+            dialog: false,
         }
     },
 
@@ -172,14 +185,26 @@ export default {
         }
     },
 
+    computed: {
+        correctAnswer () {
+           return this.quizes[this.num].questions.find(e => e.correct === true); // { name: 'apples', quantity: 2 }  
+        }
+    },
+
     methods: {
         storeAnswer(answer) {
+            
             var wrong = document.getElementById('wrong')
+            wrong.volume = 0.3 // Set volume of sound
             var right = document.getElementById('right')
+            right.volume = 0.3 // Set volume of sound
             if (answer == false) {
                 wrong.play()
+                this.dialog = true
+                    // Dialog popup button will increment the num
             } else if (answer == true) {
                 right.play()
+                this.num++
             }
             
         
