@@ -50,7 +50,7 @@
                         <v-card-text>{{correctAnswer.question}}</v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text @click="dialog = false, num++, countDown = 20">Next Question</v-btn>
+                        <v-btn color="green darken-1" text @click="resetSounds">Next Question</v-btn>
                         </v-card-actions>
                     </v-card>
                     </v-dialog>
@@ -224,7 +224,30 @@ export default {
     },
 
     methods: {
+        resetSounds () {
+            var wrong = document.getElementById('wrong')
+            var right = document.getElementById('right')
+            var timer = document.getElementById('timer')
+            console.log('reset')
+            this.num += 1
+            this.dialog = false
+            this.countDown = 20
+            timer.play()
+            
+
+            
+        
+            wrong.pause()
+            wrong.currentTime = 0
+            
+            right.pause()
+            right.currentTime = 0
+        },
+
         storeAnswer(answer) {
+            var timer = document.getElementById('timer')
+            timer.pause()
+            timer.currentTime = 0
             
             var wrong = document.getElementById('wrong')
             wrong.volume = 0.3 // Set volume of sound
@@ -239,6 +262,7 @@ export default {
                 right.play()
                 this.num++
                 this.countDown = 20 // Reset the timer
+                timer.play()
             }
             
         
@@ -263,6 +287,8 @@ export default {
                 var i = 0
                 var n = 0
                 this.countDownTimer()
+                var timer = document.getElementById('timer')
+                timer.play()
             while (i < response.data.results.length) { // goes into each object
                 let questionArray = []
                 while (n < 3) { // goes into the current objects sub array 
