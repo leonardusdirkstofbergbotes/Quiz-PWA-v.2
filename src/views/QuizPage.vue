@@ -228,6 +228,9 @@ export default {
 
         countDown (value) {
             if(value == 0) {
+                var timer = document.getElementById('timer')
+                timer.pause()
+                timer.currentTime = 0
                 this.dialogHeader = "Time is up"
                 var timesUp = document.getElementById('timesUp')
                 timesUp.volume = 0.3 // Set volume of sound
@@ -246,22 +249,28 @@ export default {
             var right = document.getElementById('right')
             var timer = document.getElementById('timer')
             console.log('reset')
-            this.num += 1
-            this.dialog = false
-            this.countDown = 20
-            timer.play()
+            if (this.num < this.QuizArrayLength - 1) {
+                this.num += 1
+                this.dialog = false
+                this.countDown = 20
+                timer.play()
+                
+                wrong.pause()
+                wrong.currentTime = 0
+                
+                right.pause()
+                right.currentTime = 0
+            } else if (this.num == this.QuizArrayLength - 1) {
+                this.dialog = false
+                alert('You are done!!!')
+            }
             
-
-            
-        
-            wrong.pause()
-            wrong.currentTime = 0
-            
-            right.pause()
-            right.currentTime = 0
         },
 
         storeAnswer(answer) {
+            if (this.num == this.QuizArrayLength) {
+                alert('last one')
+            }
             this.progress = (this.num + 1) / this.QuizArrayLength * 100
             
             var timer = document.getElementById('timer')
