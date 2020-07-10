@@ -1,5 +1,8 @@
 <template>
     <div>
+        <audio id="timer" preload="auto">
+            <source src="@/assets/sounds/timer.mp3"></source>
+        </audio>
          <audio id="wrong" preload="auto">
             <source src="@/assets/sounds/fail.mp3"></source>
         </audio>
@@ -25,22 +28,26 @@
         </v-row> <!-- Option bar ends -->
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
+        <v-flex v-if="countDown !== 0">
+            <!-- Timer comes here -->{{countDown}}
+        </v-flex>
             <v-flex >
                 <h1 class="text-center">{{quizes[num].num}}. {{quizes[num].name}}</h1> <!-- Question number and title -->
 
                 <v-layout row justify-space-between> <!-- contains the possible answers -->
-                    <v-card width="250" min-height="150" v-for="item in shuffleArray" :key="item" @click="storeAnswer(item.correct)" >
+                    <v-card width="250" min-height="150" v-for="item in shuffleArray" :key="item.question" @click="storeAnswer(item.correct)" >
                         {{item.question}}
                     </v-card>
                 </v-layout>
 
                <v-dialog v-model="dialog" persistent max-width="350">
                     <v-card>
-                        <v-card-title class="headline">The Correct answer is</v-card-title>
+                        <v-card-title class="headline">{{dialogHeader}}</v-card-title>
+                        <v-card-subtitle>The correct answer is:</v-card-subtitle>
                         <v-card-text>{{correctAnswer.question}}</v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text @click="dialog = false, num++">Next Question</v-btn>
+                        <v-btn color="green darken-1" text @click="dialog = false, num++, countDown = 30">Next Question</v-btn>
                         </v-card-actions>
                     </v-card>
                     </v-dialog>
@@ -122,7 +129,8 @@ export default {
             questionType: 'multiple',
             num: 0,
             dialog: false,
-            // shuffledArray: shuffleArray(quizes)
+            countDown : 30,
+            dialogHeader: ''
         }
     },
 
@@ -191,15 +199,19 @@ export default {
         },
 
         shuffleArray(a,b,c,d) {
-            // for (let i = this.quizes[this.num].questions.length - 1; i > 0; i--) {
-            //     const j = Math.floor(Math.random() * (i + 1));
-            //    let results =  [this.quizes[this.num].questions[i], this.quizes[this.num].questions[j]] = [this.quizes[this.num].questions[j], this.quizes[this.num].questions[i]];
-            //     return results
-            //array,placeholder,placeholder,placeholder
             var a = this.quizes[this.num].questions
                let results =  c=a.length;while(c)b=Math.random()*c--|0,d=a[c],a[c]=a[b],a[b]=d
                return a
             
+        }
+    },
+
+    watch: {
+        countDown (value) {
+            if(value == 0) {
+                this.dialogHeader = "Time is up"
+                this.dialog = true
+            }
         }
     },
 
@@ -211,22 +223,38 @@ export default {
             var right = document.getElementById('right')
             right.volume = 0.3 // Set volume of sound
             if (answer == false) {
+                this.dialogHeader = "Oops! That is incorrect"
                 wrong.play()
                 this.dialog = true
                     // Dialog popup button will increment the num
             } else if (answer == true) {
                 right.play()
                 this.num++
+                this.countDown = 30 // Reset the timer
             }
             
         
         },
+
+        countDownTimer() {
+            if(this.countDown > 0) { 
+                setTimeout(() => {
+                    this.countDown -= 1
+                    if (this.dialog == true) { // If a answer is pressed then stop the timer
+                        this.countDown += 1 //doesnt really stop but appears that way in the dom
+                    }
+                    this.countDownTimer()
+                }, 1000)
+            }
+        },
+
 
         getQuestions () {
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
                 var i = 0
                 var n = 0
+                this.countDownTimer()
             while (i < response.data.results.length) { // goes into each object
                 let questionArray = []
                 while (n < 3) { // goes into the current objects sub array 
