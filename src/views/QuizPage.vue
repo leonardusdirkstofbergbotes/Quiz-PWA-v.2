@@ -31,6 +31,7 @@
         </v-row> <!-- Option bar ends -->
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
+        <v-progress-linear v-if="progress !== 0" :value="progress"></v-progress-linear>
         <v-flex v-if="countDown !== 0">
             <!-- Timer comes here -->{{countDown}}
         </v-flex>
@@ -120,15 +121,16 @@ export default {
 
     data () {
         return {
+            progress: 0,
             optionSelect: true,
             cat: this.category,
             quizes: [],
-            QuizArrayLength: '',
+            QuizArrayLength: Number,
             difficultyOptions: ['easy', 'medium', 'hard'],
             difficulty: "easy",
             number: 10,
             questionNumbers: [10, 15, 20, 25],
-            questionTypeOptions: ['any','multiple', 'True or False'],
+            questionTypeOptions: ['any','multiple', 'boolean'],
             questionType: 'multiple',
             num: 0,
             dialog: false,
@@ -189,14 +191,11 @@ export default {
                 this.cat = 32
             } 
             
-        },
-
-        quizes (value) { 
-            this.QuizArrayLength = value.length
         }
     },
 
     computed: {
+
         correctAnswer () {
            return this.quizes[this.num].questions.find(e => e.correct === true); // { name: 'apples', quantity: 2 }  
         },
@@ -210,6 +209,10 @@ export default {
     },
 
     watch: {
+        quizes (value) {
+            this.QuizArrayLength = value.length
+        },
+
         countDown (value) {
             if(value == 0) {
                 this.dialogHeader = "Time is up"
@@ -245,6 +248,8 @@ export default {
         },
 
         storeAnswer(answer) {
+            this.progress = (this.num + 1) / this.QuizArrayLength * 100
+            
             var timer = document.getElementById('timer')
             timer.pause()
             timer.currentTime = 0
