@@ -3,6 +3,9 @@
         <audio id="timer" preload="auto">
             <source src="@/assets/sounds/timer.mp3"></source>
         </audio>
+        <audio id="timesUp" preload="auto">
+            <source src="@/assets/sounds/timesUp.mp3"></source>
+        </audio>
          <audio id="wrong" preload="auto">
             <source src="@/assets/sounds/fail.mp3"></source>
         </audio>
@@ -47,7 +50,7 @@
                         <v-card-text>{{correctAnswer.question}}</v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text @click="dialog = false, num++, countDown = 30">Next Question</v-btn>
+                        <v-btn color="green darken-1" text @click="dialog = false, num++, countDown = 20">Next Question</v-btn>
                         </v-card-actions>
                     </v-card>
                     </v-dialog>
@@ -129,7 +132,7 @@ export default {
             questionType: 'multiple',
             num: 0,
             dialog: false,
-            countDown : 30,
+            countDown : 20,
             dialogHeader: ''
         }
     },
@@ -210,7 +213,12 @@ export default {
         countDown (value) {
             if(value == 0) {
                 this.dialogHeader = "Time is up"
+                var timesUp = document.getElementById('timesUp')
+                timesUp.volume = 0.3 // Set volume of sound
+                timesUp.play()
                 this.dialog = true
+                this.countDown = 20
+                this.countDownTimer()
             }
         }
     },
@@ -230,7 +238,7 @@ export default {
             } else if (answer == true) {
                 right.play()
                 this.num++
-                this.countDown = 30 // Reset the timer
+                this.countDown = 20 // Reset the timer
             }
             
         
