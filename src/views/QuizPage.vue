@@ -31,7 +31,7 @@
         </v-row> <!-- Option bar ends -->
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
-        <v-progress-linear v-if="progress !== 0" :value="progress"></v-progress-linear>
+        <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress">{{progressText}}</v-progress-linear>
         <v-flex v-if="countDown !== 0">
             <!-- Timer comes here -->{{countDown}}
         </v-flex>
@@ -195,6 +195,19 @@ export default {
     },
 
     computed: {
+        progressText () {
+            if (this.progress < 20) {
+                return ''
+            } else if (this.progress >= 21 && this.progress < 40) { 
+                return "You're doing great"
+            } else if (this.progress >= 50 && this.progress < 55) {
+                return 'Halfway there'
+            } else if (this.progress > 65 && this.progress < 79) {
+                return 'Getting there'
+            }else if (this.progress >= 90 && this.progress < 100) {
+                return 'Almost there'
+            }
+        },
 
         correctAnswer () {
            return this.quizes[this.num].questions.find(e => e.correct === true); // { name: 'apples', quantity: 2 }  
@@ -222,6 +235,7 @@ export default {
                 this.dialog = true
                 this.countDown = 20
                 this.countDownTimer()
+                this.progress = (this.num + 1) / this.QuizArrayLength * 100
             }
         }
     },
