@@ -263,6 +263,7 @@ export default {
             } else if (this.num == this.QuizArrayLength - 1) {
                 this.dialog = false
                 alert('You are done!!!')
+                this.countDown = -1
             }
             
         },
@@ -305,6 +306,8 @@ export default {
                     }
                     this.countDownTimer()
                 }, 1000)
+            } else if (this.countDown == -1) {
+                return
             }
         },
 
