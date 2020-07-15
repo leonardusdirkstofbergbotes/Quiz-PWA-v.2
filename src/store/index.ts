@@ -6,9 +6,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    loading: false,
     loggedInUser: false
   },
   mutations: {
+    load (state, payload) {
+      state.loading = payload
+    },
+
     sign (state, payload) {
       state.loggedInUser = payload
     }
@@ -16,6 +21,7 @@ export default new Vuex.Store({
   actions: {
 
     signUserIn ({commit}, payload) {
+      
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(response => {
         // auth the user and get uid 
 
@@ -32,6 +38,7 @@ export default new Vuex.Store({
     },
 
     createUser ({commit}, payload) {
+      commit('load', true) // start loading
       firebase.auth().createUserWithEmailAndPassword(payload.email , payload.password).then(response => {
         const newUser = {
           uid: response.user?.uid,
@@ -54,15 +61,21 @@ export default new Vuex.Store({
           console.log(signInerror)
         }) // firebase signin .catch ENDS
 
+        commit('load', false) // stop loading
       }) // firebase auth.then ENDS
       .catch(error => {
         console.log(error)
+        commit('load', false) // stop loading
       }) // firebase auth.catch ENDS
     }
   },
   getters: {
     getUser (state) {
       return state.loggedInUser
+    },
+
+    getLoading (state) {
+      return state.loading
     }
   }
 })
