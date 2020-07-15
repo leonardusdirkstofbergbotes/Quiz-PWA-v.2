@@ -16,7 +16,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="signedIn == false" link to="/register"> <!-- Register user -->
+        <v-list-item v-if="user == false" link to="/register"> <!-- Register user -->
           <v-list-item-action>
             <v-icon>fa-user-plus</v-icon>
           </v-list-item-action>
@@ -25,7 +25,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="signedIn == false" link to="/login"> <!-- Login user -->
+        <v-list-item v-if="user == false" link to="/login"> <!-- Login user -->
           <v-list-item-action>
             <v-icon>fa-user-check</v-icon>
           </v-list-item-action>
@@ -36,14 +36,17 @@
 
         <v-divider></v-divider>
 
-        <v-list-item v-for="item in sidebarOptions" :key="item.name" link :to="item.link"> <!-- Link to categories -->
+      </v-list> 
+
+      <v-list v-if="user !== false"> <!-- when user is signed in these buttons appear -->
+        <v-list-item v-for="item in signedInOptions" :key="item.name" link :to="item.link"> <!-- Signed in options for sidebar -->
           <v-list-item-content>
             <v-list-item-title>{{item.name}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+      </v-list>
 
-      </v-list> <!-- Side bar ends -->
-    </v-navigation-drawer>
+    </v-navigation-drawer> <!-- Side bar ends -->
 
     <v-app-bar app color="indigo" dark dense>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -57,6 +60,9 @@
 
       <v-btn text v-if="user !== false"> <!-- If user is signed in -->
         Welcome {{user.name}}
+      </v-btn>
+      <v-btn @click="logoutUser" text v-if="user !== false"> <!-- If user is signed in -->
+        Logout
       </v-btn>
     </v-app-bar>
 
@@ -76,10 +82,9 @@
   export default {
     name: 'main app',
     data: () => ({
-      signedIn: false,
       drawer: null,
-      sidebarOptions: [
-        {name: 'Profile', link: 'profile', requireSignIn: true}
+      signedInOptions: [
+        {name: 'Profile', link: 'profile'}
       ]
     }),
 
@@ -99,6 +104,12 @@
         if (value !== null) {
           this.signedIn = true
         }
+      }
+    },
+
+    methods: {
+      logoutUser () {
+        this.$store.dispatch('logoutUser')
       }
     }
   }

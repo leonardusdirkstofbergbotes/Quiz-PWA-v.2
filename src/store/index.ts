@@ -16,6 +16,10 @@ export default new Vuex.Store({
 
     sign (state, payload) {
       state.loggedInUser = payload
+    },
+
+    logout (state, payload) {
+      state.loggedInUser = payload
     }
   },
   actions: {
@@ -68,6 +72,15 @@ export default new Vuex.Store({
         console.log(error)
         commit('load', false) // stop loading
       }) // firebase auth.catch ENDS
+    },
+
+    logoutUser ({commit}) {
+      commit('logout', false)
+      firebase.auth().signOut().then(function() {
+        console.log('Signed Out');
+      }, function(error) {
+        console.error('Sign Out Error', error);
+      });
     }
   },
   getters: {
