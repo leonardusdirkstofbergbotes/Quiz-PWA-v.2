@@ -21,19 +21,20 @@ export default new Vuex.Store({
   actions: {
 
     signUserIn ({commit}, payload) {
-      
+      commit('load', true) // start loading
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(response => {
         // auth the user and get uid 
 
         firebase.database().ref('users/' + response.user?.uid).once('value').then(data => {
           // get all the info of the user signed in
 
-          console.log(data.val())
-          // commit('sign', )
+          commit('sign', data.val())
         })
+        commit('load', false) // stop loading
       }) // firebase signin .then ENDS
       .catch(error => {
         console.log('Sign in error = ' + error)
+        commit('load', false) // stop loading
       })// firebase signin .catch ENDS
     },
 

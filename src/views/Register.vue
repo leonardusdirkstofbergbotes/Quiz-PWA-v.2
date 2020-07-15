@@ -1,5 +1,5 @@
 <template>
-    <v-form v-model="valid" @submit.prevent="registerUser">
+    <v-form @submit.prevent="registerUser">
     <v-container>
       <v-row>
         <v-flex xs12>
@@ -38,7 +38,6 @@ export default {
     name: 'Register',
     data() {
         return {
-            valid: false,
             profilePic: null,
             name: '',
             nameRules: [
