@@ -1,5 +1,5 @@
 <template>
-    <v-form v-model="valid">
+    <v-form v-model="valid" @submit.prevent="registerUser">
     <v-container>
       <v-row>
         <v-flex xs12>
@@ -18,13 +18,18 @@
           <v-text-field
             v-model="password"
             label="Enter password"
-            @click:append="() => (value = !value)"
             type="password"
             :rules="[passwordRules]"
           ></v-text-field>
         </v-flex>
       </v-row>
+
+      <v-flex>
+            <v-btn type="submit" x-large color="primary">Register</v-btn>
+      </v-flex>
+
     </v-container>
+
   </v-form>
 </template>
 
@@ -58,6 +63,18 @@ export default {
         // }
             ]
         }
+    }, //data ends
+
+    methods: {
+      registerUser () {
+        const userData = {
+          name: this.name,
+          surname: this.surname,
+          email: this.emailAdress,
+          password: this.password
+        }
+        this.$store.dispatch('createUser', userData)
+      }
     }
 }
 </script>

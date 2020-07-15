@@ -12,7 +12,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/register"> <!-- Register user -->
+        <v-list-item v-if="signedIn == false" link to="/register"> <!-- Register user -->
           <v-list-item-action>
             <v-icon>fa-user-plus</v-icon>
           </v-list-item-action>
@@ -21,7 +21,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link  to="/login"> <!-- Login user -->
+        <v-list-item v-if="signedIn == false" link to="/login"> <!-- Login user -->
           <v-list-item-action>
             <v-icon>fa-user-check</v-icon>
           </v-list-item-action>
@@ -32,7 +32,7 @@
 
         <v-divider></v-divider>
 
-        <v-list-item v-for="item in categories" :key="item.name" link :to="'/quiz/' + item.link"> <!-- Link to categories -->
+        <v-list-item v-for="item in sidebarOptions" :key="item.name" link :to="item.link"> <!-- Link to categories -->
           <v-list-item-content>
             <v-list-item-title>{{item.name}}</v-list-item-title>
           </v-list-item-content>
@@ -60,13 +60,12 @@
 
 <script>
   export default {
+    name: 'main app',
     data: () => ({
+      signedIn: false,
       drawer: null,
-      categories: [
-        {name: 'Sport', link: 'Sport'},
-        {name: 'General Know', link: 'General Knowledge'},
-        {name: 'Animals', link: 'Animals'},
-        {name: 'Celebrities', link: 'Celebrities'}
+      sidebarOptions: [
+        {name: 'Profile', link: 'profile', requireSignIn: true}
       ]
     }),
   }

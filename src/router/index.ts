@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '@/views/Login.vue'
+import Profile from '@/views/Profile.vue'
 import Register from '@/views/Register.vue'
 import QuizPage from '@/views/QuizPage.vue'
 
@@ -28,6 +29,11 @@ Vue.use(VueRouter)
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   }
 ]
 
