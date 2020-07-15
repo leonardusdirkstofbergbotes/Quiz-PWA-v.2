@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-space-around>
-      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :key="card.category" outlined class="hoverMe ma-4">
+      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :disabled="card.free == false && signedIn == false" :key="card.category" outlined class="hoverMe ma-4">
             <v-img contain height="300" :src="require(`@/assets/thumbs/${card.img}.webp`)"></v-img>
             <v-card-title class="justify-center">{{card.category}}</v-card-title>
       </v-card>
@@ -14,12 +14,14 @@ export default {
 
   data () {
     return {
+      signedIn: false,
+
       quizCards: [
-        {category: 'Sport', img: 'sports', free: true},
+        {category: 'Sport', img: 'sports', free: true, title: 'ddd'},
         {category: 'General Knowledge', img: 'generalKnowledge', free: true},
         {category: 'Animals', img: 'animals', free: true},
         {category: 'Celebrities', img: 'celebrities', free: true},
-        {category: 'Books', img: 'books', free: false},
+        {category: 'Books', img: 'books', free: false, title: 'Please sign in'},
         {category: 'Movies', img: 'movies', free: false},
         {category: 'Vehicles', img: 'vehicles', free: false},
         {category: 'Historical', img: 'historical', free: false},
