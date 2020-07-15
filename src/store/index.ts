@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loggedInUser: ''
+    loggedInUser: false
   },
   mutations: {
     sign (state, payload) {
@@ -62,7 +62,7 @@ export default new Vuex.Store({
   },
   getters: {
     getUser (state) {
-      return this.loggedInUser
+      return state.loggedInUser
     }
   }
 })

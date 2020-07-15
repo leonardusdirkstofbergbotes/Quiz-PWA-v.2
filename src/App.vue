@@ -68,6 +68,21 @@
         {name: 'Profile', link: 'profile', requireSignIn: true}
       ]
     }),
+
+    computed: {
+      user () {
+        return this.$store.getters.getUser
+      }
+    },
+
+    watch: {
+      user (value) {
+        console.log(value) 
+        if (value !== null) {
+          this.signedIn = true
+        }
+      }
+    }
   }
 </script>
 

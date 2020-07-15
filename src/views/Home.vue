@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-space-around>
-      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :disabled="card.free == false && signedIn == false" :key="card.category" outlined class="hoverMe ma-4">
+      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :disabled="card.free == false && user == false" :key="card.category" outlined class="hoverMe ma-4">
             <v-img contain height="300" :src="require(`@/assets/thumbs/${card.img}.webp`)"></v-img>
             <v-card-title class="justify-center">{{card.category}}</v-card-title>
       </v-card>
@@ -14,7 +14,6 @@ export default {
 
   data () {
     return {
-      signedIn: false,
 
       quizCards: [
         {category: 'Sport', img: 'sports', free: true, title: 'ddd'},
@@ -42,6 +41,12 @@ export default {
         {category: 'Gadgets', img: 'gadgets', free: false},
         {category: 'Cartoons', img: 'cartoon', free: false},
       ]
+    }
+  },
+
+  computed: {
+    user () {
+      return this.$store.getters.getUser
     }
   },
 
