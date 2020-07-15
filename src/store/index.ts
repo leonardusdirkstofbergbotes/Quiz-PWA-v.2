@@ -6,10 +6,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    sessionToken: '',
     loading: false,
     loggedInUser: false
   },
   mutations: {
+    storeToken (state, payload) {
+      state.sessionToken = payload
+    },
+
     load (state, payload) {
       state.loading = payload
     },
@@ -23,6 +28,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+
+    sendToken ({commit}, payload) {
+      commit('storeToken', payload)
+    },
 
     signUserIn ({commit}, payload) {
       commit('load', true) // start loading
@@ -84,6 +93,10 @@ export default new Vuex.Store({
         console.error('Sign Out Error', error);
         commit('load', false) // stop loading
       });
+    },
+
+    setLoadState ({commit}, payload) {
+      commit('load', payload)
     }
   },
   getters: {
@@ -93,6 +106,10 @@ export default new Vuex.Store({
 
     getLoading (state) {
       return state.loading
+    },
+
+    getToken (state) {
+      return state.sessionToken
     }
   }
 })

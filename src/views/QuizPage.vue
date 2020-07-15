@@ -12,7 +12,9 @@
         <audio id="right" preload="auto">
             <source src="@/assets/sounds/correct.mp3"></source>
         </audio>
-        <v-row v-if="optionSelect" row justify-space-around> <!-- Bar that lets you choose the options -->
+
+        <!-- Bar that lets you choose the options -->
+        <v-row v-if="optionSelect" row justify-space-around> 
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
             </v-col>
@@ -28,23 +30,27 @@
             <v-col>
                     <v-btn block @click="getQuestions">GO</v-btn>
             </v-col>
-        </v-row> <!-- Option bar ends -->
+        </v-row> 
+        <!-- Option bar ends -->
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
         <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress">{{progressText}}</v-progress-linear>
+        
         <v-flex v-if="countDown !== 0">
             <!-- Timer comes here -->{{countDown}}
         </v-flex>
             <v-flex >
                 <h1 class="text-center">{{quizes[num].num}}. {{quizes[num].name}}</h1> <!-- Question number and title -->
 
-                <v-layout row justify-space-between> <!-- contains the possible answers -->
+                <!-- contains the possible answers -->
+                <v-layout row justify-space-between> 
                     <v-card width="250" min-height="150" v-for="item in shuffleArray" :key="item.question" @click="storeAnswer(item.correct)" >
                         {{item.question}}
                     </v-card>
                 </v-layout>
 
-               <v-dialog v-model="dialog" persistent max-width="350">
+                <!-- correct answer dialog -->
+               <v-dialog v-model="dialog" persistent max-width="350"> 
                     <v-card>
                         <v-card-title class="headline">{{dialogHeader}}</v-card-title>
                         <v-card-subtitle>The correct answer is:</v-card-subtitle>
@@ -56,7 +62,8 @@
                     </v-card>
                 </v-dialog>
 
-                 <v-dialog v-model="tryAgainDialog" max-width="290">  <!-- try again dialog -->
+                <!-- try again dialog -->
+                 <v-dialog v-model="tryAgainDialog" max-width="290">  
                     <v-card>
                         <v-card-title class="headline">Well done</v-card-title>
 
@@ -76,7 +83,8 @@
                         </v-btn>
                         </v-card-actions>
                     </v-card>
-                </v-dialog> <!-- try again dialog ends -->
+                </v-dialog> 
+                <!-- try again dialog ends -->
 
             </v-flex>
         </v-container>
@@ -88,13 +96,6 @@ export default {
     name: 'QuizPage',
 
     created () { // sets the code of the category
-    this.$http.get('https://opentdb.com/api_token.php?command=request').then(feedback => {
-   
-        var myobj = JSON.parse(feedback.request.response)
-        this.sessionToken =  myobj.token
-    }).catch(error => {
-        console.log(error)
-    })
         if (this.category == 'Sport') {
             this.cat = 21
         } else if (this.category == 'General Knowledge') {
@@ -150,7 +151,6 @@ export default {
 
     data () {
         return {
-            sessionToken: '',
             correctCount: 0,
             progress: 0,
             optionSelect: true,
@@ -227,6 +227,10 @@ export default {
     },
 
     computed: {
+        sessionToken () { // token that prevents the same question being requested twice
+            return this.$store.getters.getToken
+        },
+
         progressText () {
             if (this.progress < 20) {
                 return ''
@@ -241,8 +245,8 @@ export default {
             }
         },
 
-        correctAnswer () {
-           return this.quizes[this.num].questions.find(e => e.correct === true); // { name: 'apples', quantity: 2 }  
+        correctAnswer () { // filter array for correct answer
+           return this.quizes[this.num].questions.find(e => e.correct === true); 
         },
 
         shuffleArray(a,b,c,d) {
@@ -263,13 +267,13 @@ export default {
                 var timer = document.getElementById('timer')
                 timer.pause()
                 timer.currentTime = 0
-                this.dialogHeader = "Time is up"
+                this.dialogHeader = "Time is up" 
                 var timesUp = document.getElementById('timesUp')
                 timesUp.volume = 0.3 // Set volume of sound
                 timesUp.play()
                 this.dialog = true
                 this.countDown = 20
-                this.countDownTimer()
+                this.countDownTimer() // restart the timer
                 this.progress = (this.num + 1) / this.QuizArrayLength * 100
             }
         }
@@ -287,7 +291,6 @@ export default {
             var wrong = document.getElementById('wrong')
             var right = document.getElementById('right')
             var timer = document.getElementById('timer')
-            console.log('reset')
             if (this.num < this.QuizArrayLength - 1) {
                 this.num += 1
                 this.dialog = false
@@ -318,21 +321,25 @@ export default {
             wrong.volume = 0.3 // Set volume of sound
             var right = document.getElementById('right')
             right.volume = 0.3 // Set volume of sound
+            
             if (answer == false) {
                 this.dialogHeader = "Oops! That is incorrect"
                 wrong.play()
                 this.dialog = true
-                    // Dialog popup button will increment the num
+                    
+
             } else if (answer == true && this.num !== this.QuizArrayLength - 1) {
                 right.play()
                 this.correctCount++
                 this.num++
                 this.countDown = 20 // Reset the timer
                 timer.play()
+
             } else if (this.num == this.QuizArrayLength - 1 && answer == true) {
                 this.correctCount++
                 this.tryAgainDialog = true
                 this.countDown = -1
+
             } else if (this.num == this.QuizArrayLength - 1 && answer == false) {
                 this.tryAgainDialog = true
                 this.countDown = -1
@@ -357,12 +364,13 @@ export default {
 
 
         getQuestions () {
-            this.quizes.length = 0
+            this.$store.dispatch('setLoadState', true)
+            this.quizes.length = 0 // reset the array when user click 'Try again'
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&token=' + this.sessionToken + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
                 var i = 0
                 var n = 0
-                this.countDownTimer()
+                this.countDownTimer() // starts the timer
                 var timer = document.getElementById('timer')
                 timer.play()
             while (i < response.data.results.length) { // goes into each object
@@ -391,7 +399,7 @@ export default {
                 i++
                 n = 0 // reset the sub array numbering
             } // while loop from individual question object ends
-                
+                this.$store.dispatch('setLoadState', false)
             })
             this.optionSelect = false // hides the option bar
         }
