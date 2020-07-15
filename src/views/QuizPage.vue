@@ -88,6 +88,13 @@ export default {
     name: 'QuizPage',
 
     created () { // sets the code of the category
+    this.$http.get('https://opentdb.com/api_token.php?command=request').then(feedback => {
+   
+        var myobj = JSON.parse(feedback.request.response)
+        this.sessionToken =  myobj.token
+    }).catch(error => {
+        console.log(error)
+    })
         if (this.category == 'Sport') {
             this.cat = 21
         } else if (this.category == 'General Knowledge') {
@@ -143,6 +150,7 @@ export default {
 
     data () {
         return {
+            sessionToken: '',
             correctCount: 0,
             progress: 0,
             optionSelect: true,
@@ -300,9 +308,6 @@ export default {
         },
 
         storeAnswer(answer) {
-            if (this.num == this.QuizArrayLength) {
-                alert('last one')
-            }
             this.progress = (this.num + 1) / this.QuizArrayLength * 100
             
             var timer = document.getElementById('timer')
@@ -318,12 +323,19 @@ export default {
                 wrong.play()
                 this.dialog = true
                     // Dialog popup button will increment the num
-            } else if (answer == true) {
+            } else if (answer == true && this.num !== this.QuizArrayLength - 1) {
                 right.play()
                 this.correctCount++
                 this.num++
                 this.countDown = 20 // Reset the timer
                 timer.play()
+            } else if (this.num == this.QuizArrayLength - 1 && answer == true) {
+                this.correctCount++
+                this.tryAgainDialog = true
+                this.countDown = -1
+            } else if (this.num == this.QuizArrayLength - 1 && answer == false) {
+                this.tryAgainDialog = true
+                this.countDown = -1
             }
             
         
@@ -346,7 +358,7 @@ export default {
 
         getQuestions () {
             this.quizes.length = 0
-            this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
+            this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&token=' + this.sessionToken + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
                 var i = 0
                 var n = 0
