@@ -54,7 +54,29 @@
                         <v-btn color="green darken-1" text @click="resetSounds">Next Question</v-btn>
                         </v-card-actions>
                     </v-card>
-                    </v-dialog>
+                </v-dialog>
+
+                 <v-dialog v-model="tryAgainDialog" max-width="290">  <!-- try again dialog -->
+                    <v-card>
+                        <v-card-title class="headline">Well done</v-card-title>
+
+                        <v-card-text>
+                            You scored {{correctCount}} out of {{QuizArrayLength}}
+                        </v-card-text>
+
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn color="green darken-1" text @click="tryAgainDialog = false">
+                            Disagree
+                        </v-btn>
+
+                        <v-btn color="green darken-1" text @click="tryAgain">
+                            Try again
+                        </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog> <!-- try again dialog ends -->
 
             </v-flex>
         </v-container>
@@ -121,6 +143,7 @@ export default {
 
     data () {
         return {
+            correctCount: 0,
             progress: 0,
             optionSelect: true,
             cat: this.category,
@@ -133,6 +156,7 @@ export default {
             questionTypeOptions: ['any','multiple', 'boolean'],
             questionType: 'multiple',
             num: 0,
+            tryAgainDialog: false, 
             dialog: false,
             countDown : 20,
             dialogHeader: ''
@@ -244,6 +268,13 @@ export default {
     },
 
     methods: {
+        tryAgain () {
+            this.tryAgainDialog = false
+            this.getQuestions()
+            this.num = 0
+            this.countDown = 20
+        },
+
         resetSounds () {
             var wrong = document.getElementById('wrong')
             var right = document.getElementById('right')
@@ -262,7 +293,7 @@ export default {
                 right.currentTime = 0
             } else if (this.num == this.QuizArrayLength - 1) {
                 this.dialog = false
-                alert('You are done!!!')
+                this.tryAgainDialog = true
                 this.countDown = -1
             }
             
@@ -289,6 +320,7 @@ export default {
                     // Dialog popup button will increment the num
             } else if (answer == true) {
                 right.play()
+                this.correctCount++
                 this.num++
                 this.countDown = 20 // Reset the timer
                 timer.play()
@@ -313,6 +345,7 @@ export default {
 
 
         getQuestions () {
+            this.quizes.length = 0
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
                 var i = 0
