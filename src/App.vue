@@ -46,6 +46,14 @@
         </v-list-item>
       </v-list>
 
+      <v-list> <!-- Sidebar buttons -->
+        <v-list-item v-for="item in regularOptions" :key="item.name" link :to="item.link"> <!-- Signed in options for sidebar -->
+          <v-list-item-content>
+            <v-list-item-title>{{item.name}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
     </v-navigation-drawer> <!-- Side bar ends -->
 
     <v-app-bar app color="indigo" dark dense>
@@ -84,7 +92,13 @@
     data: () => ({
       drawer: null,
       signedInOptions: [
-        {name: 'Profile', link: 'profile'}
+        {name: 'Profile', link: '/profile'}
+      ],
+
+      regularOptions: [
+        {name: "Contact us", link: '/contact'},
+        {name: 'About us', link: '/about'},
+        {name: 'Leaderboard', link: '/leaderboard'}
       ]
     }),
 

@@ -75,11 +75,14 @@ export default new Vuex.Store({
     },
 
     logoutUser ({commit}) {
-      commit('logout', false)
+      commit('load', true) // start loading
       firebase.auth().signOut().then(function() {
         console.log('Signed Out');
+        commit('logout', false)
+        commit('load', false) // stop loading
       }, function(error) {
         console.error('Sign Out Error', error);
+        commit('load', false) // stop loading
       });
     }
   },
