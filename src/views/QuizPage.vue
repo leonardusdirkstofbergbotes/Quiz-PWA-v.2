@@ -167,11 +167,32 @@ export default {
             tryAgainDialog: false, 
             dialog: false,
             countDown : 20,
-            dialogHeader: ''
+            dialogHeader: '',
+            badge: ''
         }
     },
 
     watch: {
+        quizes (value) {
+            this.QuizArrayLength = value.length
+        },
+
+        countDown (value) {
+            if(value == 0) {
+                var timer = document.getElementById('timer')
+                timer.pause()
+                timer.currentTime = 0
+                this.dialogHeader = "Time is up" 
+                var timesUp = document.getElementById('timesUp')
+                timesUp.volume = 0.3 // Set volume of sound
+                timesUp.play()
+                this.dialog = true
+                this.countDown = 20
+                this.countDownTimer() // restart the timer
+                this.progress = (this.num + 1) / this.QuizArrayLength * 100
+            }
+        },
+
         category (value) { // Also sets the code of the category
             if (value == 'Sport') {
                 this.cat = 21
@@ -231,6 +252,10 @@ export default {
             return this.$store.getters.getToken
         },
 
+        user() {
+            return this.$store.getters.getUser
+        },
+
         progressText () {
             if (this.progress < 20) {
                 return ''
@@ -254,28 +279,6 @@ export default {
                let results =  c=a.length;while(c)b=Math.random()*c--|0,d=a[c],a[c]=a[b],a[b]=d
                return a
             
-        }
-    },
-
-    watch: {
-        quizes (value) {
-            this.QuizArrayLength = value.length
-        },
-
-        countDown (value) {
-            if(value == 0) {
-                var timer = document.getElementById('timer')
-                timer.pause()
-                timer.currentTime = 0
-                this.dialogHeader = "Time is up" 
-                var timesUp = document.getElementById('timesUp')
-                timesUp.volume = 0.3 // Set volume of sound
-                timesUp.play()
-                this.dialog = true
-                this.countDown = 20
-                this.countDownTimer() // restart the timer
-                this.progress = (this.num + 1) / this.QuizArrayLength * 100
-            }
         }
     },
 
@@ -306,6 +309,17 @@ export default {
                 this.dialog = false
                 this.tryAgainDialog = true
                 this.countDown = -1
+
+                const profileUpdateInfo = { // profile info to be send to firestore
+                    uid: this.user.uid,
+                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    lastGame: {
+                        category: this.cat,
+                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    },
+                    badges: [this.badge]
+                } 
+                this.$store.dispatch('sendProfileData', profileUpdateInfo)
             }
             
         },
@@ -335,14 +349,39 @@ export default {
                 this.countDown = 20 // Reset the timer
                 timer.play()
 
+                // quiz is done
             } else if (this.num == this.QuizArrayLength - 1 && answer == true) {
                 this.correctCount++
                 this.tryAgainDialog = true
                 this.countDown = -1
 
+                const profileUpdateInfo = { // profile info to be send to firestore
+                    uid: this.user.uid,
+                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    lastGame: {
+                        category: this.cat,
+                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    },
+                    badges: [this.badge]
+                } 
+                this.$store.dispatch('sendProfileData', profileUpdateInfo)
+
+                //quiz is also done
             } else if (this.num == this.QuizArrayLength - 1 && answer == false) {
                 this.tryAgainDialog = true
                 this.countDown = -1
+
+                const profileUpdateInfo = { // profile info to be send to firestore
+                    uid: this.user.uid,
+                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    lastGame: {
+                        category: this.cat,
+                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
+                    },
+                    badges: [this.badge]
+                } 
+                this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                
             }
             
         
@@ -368,6 +407,7 @@ export default {
             this.quizes.length = 0 // reset the array when user click 'Try again'
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&token=' + this.sessionToken + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
+                console.log(response.data.response_code)
                 var i = 0
                 var n = 0
                 this.countDownTimer() // starts the timer

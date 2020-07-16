@@ -3,6 +3,8 @@
     <v-flex v-for="item in profileInfo" :key="item">
         {{item}}
     </v-flex>
+
+    {{profileInfo}}
  </v-container>
 </template>
 
@@ -17,7 +19,7 @@ export default {
 
     computed: {
         profileInfo () {
-            return this.$store.getters.getUser
+            return this.$store.getters.getProfile
         }
     }
 }

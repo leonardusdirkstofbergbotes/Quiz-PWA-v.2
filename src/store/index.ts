@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     sessionToken: '',
     loading: false,
-    loggedInUser: false
+    loggedInUser: false,
+    profile: ''
   },
   mutations: {
     storeToken (state, payload) {
@@ -25,6 +26,10 @@ export default new Vuex.Store({
 
     logout (state, payload) {
       state.loggedInUser = payload
+    },
+
+    storeProfileInfo (state, payload) {
+      state.profile = payload
     }
   },
   actions: {
@@ -37,6 +42,13 @@ export default new Vuex.Store({
       commit('load', true) // start loading
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(response => {
         // auth the user and get uid 
+
+        // get user profile info
+        firebase.firestore().collection('profile').doc(response.user?.uid).get().then(profileData => {
+          commit('storeProfileInfo', profileData.data())
+        }).catch(profileRetrieveError => {
+          console.log('profile retrieve error = ' + profileRetrieveError)
+        })
 
         firebase.database().ref('users/' + response.user?.uid).once('value').then(data => {
           // get all the info of the user signed in
@@ -97,6 +109,13 @@ export default new Vuex.Store({
 
     setLoadState ({commit}, payload) {
       commit('load', payload)
+    },
+
+    sendProfileData ({commit}, payload) {
+      console.log(payload)
+      firebase.firestore().collection('profile').doc(payload.uid).set(payload, {merge: true}).then(response => {
+        console.log(response)
+      })
     }
   },
   getters: {
@@ -110,6 +129,10 @@ export default new Vuex.Store({
 
     getToken (state) {
       return state.sessionToken
+    },
+
+    getProfile (state) {
+      return state.profile
     }
   }
 })
