@@ -33,6 +33,12 @@
         </v-row> 
         <!-- Option bar ends -->
 
+        <v-container v-if="noMoreResults" id="noResultImgHolder">
+            <img id="noResultImg" src="@/assets/images/noResult.jpg">
+            <h2 class="display-2 text-center">No more results</h2>
+            <h3 class="sub-heading text-center">We are getting more soon</h3>
+        </v-container>
+
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
         <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress">{{progressText}}</v-progress-linear>
         
@@ -151,6 +157,7 @@ export default {
 
     data () {
         return {
+            noMoreResults: false,
             correctCount: 0,
             progress: 0,
             optionSelect: true,
@@ -252,6 +259,10 @@ export default {
             return this.$store.getters.getToken
         },
 
+        profileCheck () {
+            return this.$store.getters.getProfile
+        },
+
         user() {
             return this.$store.getters.getUser
         },
@@ -310,21 +321,46 @@ export default {
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                const profileUpdateInfo = { // profile info to be send to firestore
-                    uid: this.user.uid,
-                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    lastGame: {
-                        category: this.cat,
-                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    },
-                    badges: [this.badge]
-                } 
-                this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                if (this.profileCheck == undefined) { // if it is the users first game
+                console.log('users first game') 
+                    const profileUpdateInfo = { // profile info to be send to firestore
+                        uid: this.user.uid,
+                        correct: this.correctCount,
+                        totalQuestions: this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength
+                        },
+                        badges: [this.badge]
+                    } 
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+
+                else if (this.profileCheck !== undefined) { // user already has a profile
+                    const profileUpdateInfo = {
+                        uid: this.user.uid,
+                        correct: this.profileCheck.correct + this.correctCount,
+                        totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength
+                        },
+                        badges: this.profileCheck.badges
+                    }
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+            
+                
             }
             
         },
 
         storeAnswer(answer) {
+            if (this.profileCheck !== undefined) {
+                console.log('user already has a profile')
+            } else if (this.profileCheck == undefined) {
+                console.log("user has no profile yet")
+            }
             this.progress = (this.num + 1) / this.QuizArrayLength * 100
             
             var timer = document.getElementById('timer')
@@ -355,32 +391,71 @@ export default {
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                const profileUpdateInfo = { // profile info to be send to firestore
-                    uid: this.user.uid,
-                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    lastGame: {
-                        category: this.cat,
-                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    },
-                    badges: [this.badge]
-                } 
-                this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                if (this.profileCheck == undefined) { // if it is the users first game
+                console.log('users first game')
+                    const profileUpdateInfo = { // profile info to be send to firestore
+                        uid: this.user.uid,
+                        correct: this.correctCount,
+                        totalQuestions: this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength,
+                        },
+                        badges: [this.badge]
+                    } 
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+
+                else if (this.profileCheck !== undefined) { // user already has a profile
+                    const profileUpdateInfo = {
+                        uid: this.user.uid,
+                        correct: this.profileCheck.correct + this.correctCount,
+                        totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength
+                        },
+                        badges: this.profileCheck.badges
+                    }
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+
 
                 //quiz is also done
             } else if (this.num == this.QuizArrayLength - 1 && answer == false) {
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                const profileUpdateInfo = { // profile info to be send to firestore
-                    uid: this.user.uid,
-                    correct: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    lastGame: {
-                        category: this.cat,
-                        score: this.correctCount + ' out of ' + this.QuizArrayLength,
-                    },
-                    badges: [this.badge]
-                } 
-                this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                if (this.profileCheck == undefined) { // if it is the users first game 
+                console.log('users first game')
+                    const profileUpdateInfo = { // profile info to be send to firestore
+                        uid: this.user.uid,
+                        correct: this.correctCount,
+                        totalQuestions: this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength,
+                        },
+                        badges: [this.badge]
+                    } 
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+
+                else if (this.profileCheck !== undefined) { // user already has a profile
+                    const profileUpdateInfo = {
+                        uid: this.user.uid,
+                        correct: this.profileCheck.correct + this.correctCount,
+                        totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        lastGame: {
+                            category: this.cat,
+                            score: this.correctCount + ' out of ' + this.QuizArrayLength
+                        },
+                        badges: this.profileCheck.badges
+                    }
+                    this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                }
+
+                
                 
             }
             
@@ -407,43 +482,71 @@ export default {
             this.quizes.length = 0 // reset the array when user click 'Try again'
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&token=' + this.sessionToken + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
-                console.log(response.data.response_code)
-                var i = 0
-                var n = 0
-                this.countDownTimer() // starts the timer
-                var timer = document.getElementById('timer')
-                timer.play()
-            while (i < response.data.results.length) { // goes into each object
-                let questionArray = []
-                while (n < 3) { // goes into the current objects sub array 
-                    var possible = {
-                        question: response.data.results[i].incorrect_answers[n],
-                        correct: false
-                    }
-                    questionArray.push(possible)
-                    n++
-                } // while loop from incorrect answers ends
+                if (response.data.response_code == 4) {
+                    this.$store.dispatch('setLoadState', false)
+                    this.noMoreResults = true
+                } else {
+                    var i = 0
+                    var n = 0
+                    this.countDownTimer() // starts the timer
+                    var timer = document.getElementById('timer')
+                    timer.play()
+                    while (i < response.data.results.length) { // goes into each object
+                        let questionArray = []
+                        while (n < 3) { // goes into the current objects sub array 
+                            var possible = {
+                                question: response.data.results[i].incorrect_answers[n],
+                                correct: false
+                            }
+                            questionArray.push(possible)
+                            n++
+                        } // while loop from incorrect answers ends
 
-                possible = { 
-                    question: response.data.results[i].correct_answer,
-                    correct: true
-                }
+                        possible = { 
+                            question: response.data.results[i].correct_answer,
+                            correct: true
+                        }
 
-                questionArray.push(possible)
-                const question = { // an object that contains each specific question
-                num: i + 1, 
-                questions: questionArray,
-                name: response.data.results[i].question
+                        questionArray.push(possible)
+                        const question = { // an object that contains each specific question
+                        num: i + 1, 
+                        questions: questionArray,
+                        name: response.data.results[i].question
+                        }
+                        this.quizes.push(question) // store each object inside an array
+                        i++
+                        n = 0 // reset the sub array numbering
+                    } // while loop from individual question object ends
+                    this.$store.dispatch('setLoadState', false)
                 }
-                this.quizes.push(question) // store each object inside an array
-                i++
-                n = 0 // reset the sub array numbering
-            } // while loop from individual question object ends
-                this.$store.dispatch('setLoadState', false)
+                this.optionSelect = false // hides the option bar
+            }) // then ENDS
+            .catch(error => {
+                console.log(error)
             })
-            this.optionSelect = false // hides the option bar
+            
+            
         }
     }
 
 }
 </script>
+
+<style scoped>
+
+#noResultImgHolder {
+    display: flex;
+    width: auto;
+    flex-direction: column;;
+    align-content: center;
+    padding: 20px;
+    height: 80vh;
+    margin-bottom: 20px;
+}
+
+#noResultImg {
+    margin: auto;
+    height: 80%;
+    max-width: 800px;
+}
+</style>
