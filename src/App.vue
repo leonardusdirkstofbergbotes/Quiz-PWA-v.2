@@ -5,7 +5,7 @@
       <v-progress-circular id="loadingCircle" :size="100" color="primary" indeterminate></v-progress-circular>
     </v-overlay>
     <v-navigation-drawer v-model="drawer" app>
-      <v-list dense> <!-- Side bar container -->
+      <v-list> <!-- Side bar container -->
 
         <v-list-item link to="/"> <!-- Home link -->
           <v-list-item-action>
@@ -56,7 +56,7 @@
 
     </v-navigation-drawer> <!-- Side bar ends -->
 
-    <v-app-bar app color="indigo" dark dense>
+    <v-app-bar app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>

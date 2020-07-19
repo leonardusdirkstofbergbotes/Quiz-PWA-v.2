@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="quizWrapper">
         <audio id="timer" preload="auto">
             <source src="@/assets/sounds/timer.mp3"></source>
         </audio>
@@ -14,7 +14,8 @@
         </audio>
 
         <!-- Bar that lets you choose the options -->
-        <v-row v-if="optionSelect" row justify-space-around> 
+        <v-flex elevation-24  class="ma-1 mt-6 pa-3 rounded-xl">
+        <v-row v-if="optionSelect" justify-space-around align="center" justify="center"> 
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
             </v-col>
@@ -28,9 +29,10 @@
             </v-col>
 
             <v-col>
-                    <v-btn block @click="getQuestions">GO</v-btn>
+                    <v-btn height="60px" dark block @click="getQuestions" color="orange" class="customBtn">START</v-btn>
             </v-col>
         </v-row> 
+        </v-flex>
         <!-- Option bar ends -->
 
         <v-container v-if="noMoreResults" id="noResultImgHolder">
@@ -40,27 +42,29 @@
         </v-container>
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
-        <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress">{{progressText}}</v-progress-linear>
+        <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress" class="mb-5">{{progressText}}</v-progress-linear>
         
-        <v-flex v-if="countDown !== 0">
-            <!-- Timer comes here -->{{countDown}}
+        <v-flex v-if="countDown !== 0" id="timerHolder">
+            <!-- Timer comes here -->
+            <b :style="{color: timerColor}" class="display-4">{{countDown}}</b>
         </v-flex>
+
             <v-flex >
                 <h1 class="text-center">{{quizes[num].num}}. {{quizes[num].name}}</h1> <!-- Question number and title -->
 
                 <!-- contains the possible answers -->
                 <v-layout row justify-space-between> 
-                    <v-card width="250" min-height="150" v-for="item in shuffleArray" :key="item.question" @click="storeAnswer(item.correct)" >
-                        {{item.question}}
+                    <v-card width="40%" min-height="200" v-for="item in shuffleArray" :key="item.question" @click="storeAnswer(item.correct)" elevation-10 class="rounded-lg my-5">
+                        <v-card-text class="text-center display-3">{{item.question}}</v-card-text>
                     </v-card>
                 </v-layout>
 
                 <!-- correct answer dialog -->
                <v-dialog v-model="dialog" persistent max-width="350"> 
                     <v-card>
-                        <v-card-title class="headline">{{dialogHeader}}</v-card-title>
-                        <v-card-subtitle>The correct answer is:</v-card-subtitle>
-                        <v-card-text>{{correctAnswer.question}}</v-card-text>
+                        <v-card-title class="headline text-center">{{dialogHeader}}</v-card-title>
+                        <v-card-subtitle class="text-center">The correct answer is:</v-card-subtitle>
+                        <v-card-text class="text-center display-3">{{correctAnswer.question}}</v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="green darken-1" text @click="resetSounds">Next Question</v-btn>
@@ -290,6 +294,18 @@ export default {
                let results =  c=a.length;while(c)b=Math.random()*c--|0,d=a[c],a[c]=a[b],a[b]=d
                return a
             
+        },
+
+        timerColor () {
+            if (this.countDown >= 15) {
+                return "green"
+            } else if (this.countDown >= 10) {
+                return "blue"
+            } else if (this.countDown > 5) {
+                return "yellow"
+            } else {
+                return "red"
+            }
         }
     },
 
@@ -533,6 +549,20 @@ export default {
 </script>
 
 <style scoped>
+
+#timerHolder {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+#dialogHeader {
+    background-color: red;
+}
+
+.customBtn {
+    font-size: 40px!important;
+}
 
 #noResultImgHolder {
     display: flex;
