@@ -10,7 +10,8 @@ export default new Vuex.Store({
     loading: false,
     loggedInUser: false,
     profile: undefined,
-    tempData: {} as any
+    tempData: {} as any,
+    firebaseErrors: String as any
   },
   mutations: {
     storeToken (state, payload) {
@@ -92,6 +93,7 @@ export default new Vuex.Store({
             let tempo = this.state.tempData
             firebase.firestore().collection('profile').doc(response.user?.uid).set(tempo).then( () => { //store the temp data
               firebase.firestore().collection('profile').doc(response.user?.uid).get().then(profileData => { // fetch the new profile info
+                commit('tempData', {}) // reset the tempdata to empty
                 commit('storeProfileInfo', profileData.data()) // save the info to the users profile page
               })
             })

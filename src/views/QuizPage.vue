@@ -14,7 +14,7 @@
         </audio>
 
         <!-- Bar that lets you choose the options -->
-        <v-flex elevation-24  class="ma-1 mt-6 pa-3 rounded-xl" v-if="optionSelect">
+        <v-flex elevation-5  class="ma-1 mt-6 pa-3 rounded-lg" v-if="optionSelect">
         <v-row  justify-space-around align="center" justify="center"> 
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
@@ -36,9 +36,11 @@
         <!-- Option bar ends -->
 
         <v-container v-if="noMoreResults" id="noResultImgHolder">
-            <img id="noResultImg" src="@/assets/images/noResult.jpg">
             <h2 class="display-2 text-center">No more results</h2>
             <h3 class="sub-heading text-center">We are getting more soon</h3>
+            <img id="noResultImg" src="@/assets/images/noResult.jpg">
+            <h2 class="display-2 text-center">Try choosing other options</h2>
+            <v-btn text to="/">Or choose another topic</v-btn>
         </v-container>
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
@@ -325,6 +327,7 @@ export default {
             const TempData = {
                 correct: this.correctCount,
                 totalQuestions: this.QuizArrayLength,
+                numberOfGames: 1,
                 lastGame: {
                     category: this.cat,
                     score: this.correctCount + ' out of ' + this.QuizArrayLength
@@ -365,6 +368,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
+                        numberOfGames: 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength
@@ -379,6 +383,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        numberOfGames: this.profileCheck.numberOfGames + 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength
@@ -439,6 +444,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
+                        numberOfGames: 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength,
@@ -451,6 +457,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        numberOfGames: this.profileCheck.numberOfGames + 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength
@@ -474,6 +481,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
+                        numberOfGames: 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength,
@@ -488,6 +496,7 @@ export default {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
+                        numberOfGames: this.profileCheck.numberOfGames + 1,
                         lastGame: {
                             category: this.cat,
                             score: this.correctCount + ' out of ' + this.QuizArrayLength
@@ -526,6 +535,7 @@ export default {
             .then(response => {
                 if (response.data.response_code == 4) {
                     this.$store.dispatch('setLoadState', false)
+                    this.optionSelect = true
                     this.noMoreResults = true
                 } else {
                     var i = 0
@@ -561,8 +571,9 @@ export default {
                         n = 0 // reset the sub array numbering
                     } // while loop from individual question object ends
                     this.$store.dispatch('setLoadState', false)
+                    this.optionSelect = false // hides the option bar
                 }
-                this.optionSelect = false // hides the option bar
+                
             }) // then ENDS
             .catch(error => {
                 console.log(error)
@@ -597,13 +608,12 @@ export default {
     flex-direction: column;;
     align-content: center;
     padding: 20px;
-    height: 80vh;
     margin-bottom: 20px;
 }
 
 #noResultImg {
     margin: auto;
-    height: 80%;
+    height: 70vh;
     max-width: 800px;
 }
 </style>
