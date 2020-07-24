@@ -83,6 +83,9 @@
 
                         <v-card-actions>
                         <v-spacer></v-spacer>
+                        <v-flex v-if="this.user == false">
+                            Sign in to save progress
+                        </v-flex>
 
                         <v-btn color="green darken-1" text @click="tryAgainDialog = false">
                             Disagree
@@ -314,14 +317,13 @@ export default {
             this.tryAgainDialog = false
             this.getQuestions()
             this.num = 0
-            this.countDown = 20
         },
 
-        resetSounds () {
+        resetSounds () {  // when a user presses on next question this method runs
             var wrong = document.getElementById('wrong')
             var right = document.getElementById('right')
             var timer = document.getElementById('timer')
-            if (this.num < this.QuizArrayLength - 1) {
+            if (this.num < this.QuizArrayLength - 1) { // if its not the last question
                 this.dialog = false
                 this.countDown = 20
                 timer.play()
@@ -330,12 +332,12 @@ export default {
                 right.pause()
                 right.currentTime = 0
                 setTimeout(() => {  this.num += 1; }, 200);
-            } else if (this.num == this.QuizArrayLength - 1) {
-                this.dialog = false
+            } else if (this.num == this.QuizArrayLength - 1 && this.user !== false) { // if it is the last question and the user is signed in
+                this.dialog = false // close the next question dialog and open the try again dialog
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                if (this.profileCheck == undefined) { // if it is the users first game
+                if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game
                 console.log('users first game') 
                     const profileUpdateInfo = { // profile info to be send to firestore
                         uid: this.user.uid,
@@ -350,7 +352,7 @@ export default {
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
                 }
 
-                else if (this.profileCheck !== undefined) { // user already has a profile
+                else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
@@ -362,9 +364,12 @@ export default {
                         badges: this.profileCheck.badges
                     }
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
-                }
+                } 
             
                 
+            } else if (this.num == this.QuizArrayLength - 1 && this.user == false) { // if its the last question and user is not yet signed in
+                this.dialog = false
+                this.tryAgainDialog = true
             }
             
         },
@@ -386,13 +391,13 @@ export default {
             var right = document.getElementById('right')
             right.volume = 0.3 // Set volume of sound
             
-            if (answer == false) {
+            if (answer == false) { // if its not the last question and the answer is incorrect
                 this.dialogHeader = "Oops! That is incorrect"
                 wrong.play()
-                this.dialog = true
+                this.dialog = true // show the right question in dialog
                     
 
-            } else if (answer == true && this.num !== this.QuizArrayLength - 1) {
+            } else if (answer == true && this.num !== this.QuizArrayLength - 1) { // if its not the last question and the answer is right
                 right.play()
                 this.correctCount++
                 this.num++
@@ -400,12 +405,13 @@ export default {
                 timer.play()
 
                 // quiz is done
-            } else if (this.num == this.QuizArrayLength - 1 && answer == true) {
+            } else if (this.num == this.QuizArrayLength - 1 && answer == true) { // if is is the last question and the answer is right
+                this.dialog = false
                 this.correctCount++
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                if (this.profileCheck == undefined) { // if it is the users first game
+                if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game
                 console.log('users first game')
                     const profileUpdateInfo = { // profile info to be send to firestore
                         uid: this.user.uid,
@@ -418,9 +424,7 @@ export default {
                         badges: [this.badge]
                     } 
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
-                }
-
-                else if (this.profileCheck !== undefined) { // user already has a profile
+                } else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
@@ -432,15 +436,17 @@ export default {
                         badges: this.profileCheck.badges
                     }
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                } else if (this.user == false) { // user is not yet signed in (still part of last question IF)
+                    alert("please sign in to save progress")
                 }
 
-
                 //quiz is also done
-            } else if (this.num == this.QuizArrayLength - 1 && answer == false) {
+            } else if (this.num == this.QuizArrayLength - 1 && answer == false) { // if its the last question and the answer is wrong
+                this.dialog = true // Show the correct answer
                 this.tryAgainDialog = true
                 this.countDown = -1
 
-                if (this.profileCheck == undefined) { // if it is the users first game 
+                if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game 
                 console.log('users first game')
                     const profileUpdateInfo = { // profile info to be send to firestore
                         uid: this.user.uid,
@@ -455,7 +461,7 @@ export default {
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
                 }
 
-                else if (this.profileCheck !== undefined) { // user already has a profile
+                else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
@@ -467,10 +473,12 @@ export default {
                         badges: this.profileCheck.badges
                     }
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
+                } else if (this.user == false) { // user is not signed in and answer is wrong
+                    this.dialog = true // show the correct answer
+                    alert('please sign in to save progress')
+                    this.tryAgainDialog = true
                 }
 
-                
-                
             }
             
         
@@ -502,6 +510,7 @@ export default {
                 } else {
                     var i = 0
                     var n = 0
+                    this.countDown = 20
                     this.countDownTimer() // starts the timer
                     var timer = document.getElementById('timer')
                     timer.play()
