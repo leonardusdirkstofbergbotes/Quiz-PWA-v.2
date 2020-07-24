@@ -14,8 +14,8 @@
         </audio>
 
         <!-- Bar that lets you choose the options -->
-        <v-flex elevation-24  class="ma-1 mt-6 pa-3 rounded-xl">
-        <v-row v-if="optionSelect" justify-space-around align="center" justify="center"> 
+        <v-flex elevation-24  class="ma-1 mt-6 pa-3 rounded-xl" v-if="optionSelect">
+        <v-row  justify-space-around align="center" justify="center"> 
             <v-col>
                 <v-select v-model="difficulty" :items="difficultyOptions" label="Difficulty"></v-select>
             </v-col>
@@ -42,9 +42,9 @@
         </v-container>
 
         <v-container v-if="quizes.length !== 0"> <!-- wrapper for each question card -->
-        <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress" class="mb-5">{{progressText}}</v-progress-linear>
+        <v-progress-linear height="20" rounded v-if="progress !== 0" :value="progress" class="my-5">{{progressText}}</v-progress-linear>
         
-        <v-flex v-if="countDown !== 0" id="timerHolder">
+        <v-flex v-if="countDown !== 0" id="timerHolder" class="mt-10">
             <!-- Timer comes here -->
             <b :style="{color: timerColor}" class="display-4">{{countDown}}</b>
         </v-flex>
@@ -322,16 +322,14 @@ export default {
             var right = document.getElementById('right')
             var timer = document.getElementById('timer')
             if (this.num < this.QuizArrayLength - 1) {
-                this.num += 1
                 this.dialog = false
                 this.countDown = 20
                 timer.play()
-                
                 wrong.pause()
                 wrong.currentTime = 0
-                
                 right.pause()
                 right.currentTime = 0
+                setTimeout(() => {  this.num += 1; }, 200);
             } else if (this.num == this.QuizArrayLength - 1) {
                 this.dialog = false
                 this.tryAgainDialog = true
