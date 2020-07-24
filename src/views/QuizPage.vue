@@ -81,19 +81,27 @@
                             You scored {{correctCount}} out of {{QuizArrayLength}}
                         </v-card-text>
 
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-flex v-if="this.user == false">
-                            Sign in to save progress
+
+                        
+                        <v-flex xs12 v-if="this.user == false">
+                            <v-layout column>
+                                <b class="dislpay-3">Register to save your results</b>
+                                <v-btn @click="registerToSave">Register</v-btn>
+                            </v-layout>
                         </v-flex>
 
-                        <v-btn color="green darken-1" text @click="tryAgainDialog = false">
-                            Disagree
-                        </v-btn>
+                        
+                        
+                        <v-card-actions>
+                            <v-btn to="/" color="green darken-1" text @click="tryAgainDialog = false">
+                                Home
+                            </v-btn>
 
-                        <v-btn color="green darken-1" text @click="tryAgain">
-                            Try again
-                        </v-btn>
+                            <v-spacer></v-spacer>
+
+                            <v-btn color="green darken-1" text @click="tryAgain">
+                                Try again
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog> 
@@ -313,6 +321,20 @@ export default {
     },
 
     methods: {
+        registerToSave () { // when a user has completed a quiz and want to save his progress by registering
+            const TempData = {
+                correct: this.correctCount,
+                totalQuestions: this.QuizArrayLength,
+                lastGame: {
+                    category: this.cat,
+                    score: this.correctCount + ' out of ' + this.QuizArrayLength
+                },
+                badges: [this.badge]
+            }
+            this.$store.dispatch('storeTempData', TempData)
+            this.$router.push('/register')
+        },
+        
         tryAgain () {
             this.tryAgainDialog = false
             this.getQuestions()
@@ -437,7 +459,7 @@ export default {
                     }
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
                 } else if (this.user == false) { // user is not yet signed in (still part of last question IF)
-                    alert("please sign in to save progress")
+                    
                 }
 
                 //quiz is also done
@@ -475,8 +497,6 @@ export default {
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
                 } else if (this.user == false) { // user is not signed in and answer is wrong
                     this.dialog = true // show the correct answer
-                    alert('please sign in to save progress')
-                    this.tryAgainDialog = true
                 }
 
             }

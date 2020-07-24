@@ -9,7 +9,8 @@ export default new Vuex.Store({
     sessionToken: '',
     loading: false,
     loggedInUser: false,
-    profile: ''
+    profile: undefined,
+    tempData: {} as any
   },
   mutations: {
     storeToken (state, payload) {
@@ -30,9 +31,17 @@ export default new Vuex.Store({
 
     storeProfileInfo (state, payload) {
       state.profile = payload
+    },
+
+    tempData (state, payload) {
+      state.tempData = payload
     }
   },
   actions: {
+
+    storeTempData ({commit}, payload) {
+      commit('tempData', payload)
+    },
 
     sendToken ({commit}, payload) {
       commit('storeToken', payload)
@@ -42,7 +51,7 @@ export default new Vuex.Store({
       commit('load', true) // start loading
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(response => {
         // auth the user and get uid 
-
+        
         // get user profile info
         firebase.firestore().collection('profile').doc(response.user?.uid).get().then(profileData => {
           commit('storeProfileInfo', profileData.data())
@@ -79,8 +88,15 @@ export default new Vuex.Store({
         // if successful then sign user in at the same time
         firebase.auth().signInWithEmailAndPassword(newUser.email, payload.password).then(response => {
           // auth the user
-            
-           commit('sign', newUser) 
+          if (this.state.tempData !== 'empty') { // new user is registering to save the results
+            let tempo = this.state.tempData
+            firebase.firestore().collection('profile').doc(response.user?.uid).set(tempo).then( () => { //store the temp data
+              firebase.firestore().collection('profile').doc(response.user?.uid).get().then(profileData => { // fetch the new profile info
+                commit('storeProfileInfo', profileData.data()) // save the info to the users profile page
+              })
+            })
+          }
+           commit('sign', newUser) // sign him in
         
         }) // firebase signin .then ENDS
         .catch(signInerror => {
@@ -113,8 +129,10 @@ export default new Vuex.Store({
 
     sendProfileData ({commit}, payload) {
       console.log(payload)
-      firebase.firestore().collection('profile').doc(payload.uid).set(payload, {merge: true}).then(response => {
-        console.log(response)
+      firebase.firestore().collection('profile').doc(payload.uid).set(payload, {merge: true}).then(response => { //send new data to profile 
+        firebase.firestore().collection('profile').doc(payload.uid).get().then(profileData => { // fetch the updated data and store in profile
+          commit('storeProfileInfo', profileData.data())
+        })
       })
     }
   },
