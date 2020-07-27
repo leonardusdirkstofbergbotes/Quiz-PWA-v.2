@@ -1,6 +1,15 @@
 <template>
-        <v-form @submit.prevent="loginUser">
+  <v-form @submit.prevent="loginUser">
     <v-container>
+
+      <v-snackbar v-model="snackbar" multi-line top timeout="-1"> <!-- holds the login errors -->
+      {{ snackbarText }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="closeAndResetError">Close</v-btn>
+      </template>
+    </v-snackbar>
+
       <v-row>
 
         <v-flex xs12>
@@ -32,6 +41,8 @@ export default {
     name: 'Login page',
     data() {
         return {
+            snackbar: false,
+            snackbarText: '',
             emailAdress: '',
             emailRules: [
                 v => !!v || 'E-mail is required',
@@ -52,9 +63,32 @@ export default {
     },
 
     methods: {
-        loginUser () {
-            this.$store.dispatch('signUserIn', {email: this.emailAdress, password: this.password})
+      closeAndResetError () {
+        this.snackbar = false
+        this.$store.dispatch('resetLoginErrors')
+      },
+
+      loginUser () {
+          this.$store.dispatch('signUserIn', {email: this.emailAdress, password: this.password})
+      }
+    },  
+
+    computed: {
+      LoginErrors() {
+        return this.$store.getters.getFirebaseLoginErrors
+      }
+    },
+
+    watch: {
+      LoginErrors (value) {
+        console.log('watch errors are = ' + value)
+        if (value == '') {
+          // Do nothing
+        } else if (value !== '') {
+          this.snackbarText = value
+          this.snackbar = true
         }
+      }
     }
 }
 </script>
