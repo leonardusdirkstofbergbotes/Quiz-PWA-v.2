@@ -11,7 +11,8 @@ export default new Vuex.Store({
     loggedInUser: false,
     profile: undefined,
     tempData: {} as any,
-    firebaseLoginErrors: ''
+    firebaseLoginErrors: '',
+    firebaseRegisterErrors: ''
   },
   mutations: {
     storeToken (state, payload) {
@@ -40,6 +41,10 @@ export default new Vuex.Store({
 
     saveLoginError (state, payload) {
       state.firebaseLoginErrors = payload
+    },
+
+    saveRegisterError (state, payload) {
+      state.firebaseRegisterErrors = payload
     }
   },
   actions: {
@@ -110,11 +115,12 @@ export default new Vuex.Store({
         .catch(signInerror => {
           console.log(signInerror)
         }) // firebase signin .catch ENDS
-
+        commit('saveRegisterError', '')
         commit('load', false) // stop loading
       }) // firebase auth.then ENDS
       .catch(error => {
         console.log(error)
+        commit('saveRegisterError', error.message)
         commit('load', false) // stop loading
       }) // firebase auth.catch ENDS
     },
@@ -146,6 +152,10 @@ export default new Vuex.Store({
 
     resetLoginErrors ({commit}) {
       commit('saveLoginError', '')
+    },
+
+    resetRegisterErrors ({commit}) {
+      commit('saveRegisterError', '')
     }
   },
   getters: {
@@ -167,6 +177,10 @@ export default new Vuex.Store({
 
     getFirebaseLoginErrors (state) {
       return state.firebaseLoginErrors
+    },
+
+    getFirebaseRegisterErrors (state) {
+      return state.firebaseRegisterErrors
     }
   }
 })

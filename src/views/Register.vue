@@ -1,6 +1,15 @@
 <template>
     <v-form @submit.prevent="registerUser">
     <v-container>
+
+      <v-snackbar v-model="snackbar" multi-line top timeout="-1"> <!-- holds the login errors -->
+        {{ snackbarText }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn color="red" text v-bind="attrs" @click="closeAndResetError">Close</v-btn>
+        </template>
+    </v-snackbar>
+
       <v-row>
         <v-flex xs12>
           <v-text-field v-model="name" :rules="nameRules" :counter="10" label="First name" required></v-text-field>
@@ -38,6 +47,8 @@ export default {
     name: 'Register',
     data() {
         return {
+            snackbar: false,
+            snackbarText: '',
             profilePic: null,
             name: '',
             nameRules: [
@@ -65,6 +76,11 @@ export default {
     }, //data ends
 
     methods: {
+      closeAndResetError () {
+        this.snackbar = false
+        this.$store.dispatch('resetRegisterErrors')
+      },
+
       registerUser () {
         const userData = {
           name: this.name,
@@ -73,6 +89,24 @@ export default {
           password: this.password
         }
         this.$store.dispatch('createUser', userData)
+      }
+    },
+
+    computed: {
+      registerError () {
+        return this.$store.getters.getFirebaseRegisterErrors
+      }
+    },
+
+    watch: {
+      registerError (value) {
+        console.log('watch errors are = ' + value)
+        if (value == '') {
+          // Do nothing
+        } else if (value !== '') {
+          this.snackbarText = value
+          this.snackbar = true
+        }
       }
     }
 }
