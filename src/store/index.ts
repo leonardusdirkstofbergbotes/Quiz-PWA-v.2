@@ -12,7 +12,8 @@ export default new Vuex.Store({
     profile: undefined,
     tempData: {} as any,
     firebaseLoginErrors: '',
-    firebaseRegisterErrors: ''
+    firebaseRegisterErrors: '',
+    leaderBoard: [] as any
   },
   mutations: {
     storeToken (state, payload) {
@@ -45,9 +46,23 @@ export default new Vuex.Store({
 
     saveRegisterError (state, payload) {
       state.firebaseRegisterErrors = payload
+    },
+
+    storeLeaderBoardData (state, payload) {
+      state.leaderBoard.push(payload)
     }
   },
+
+
   actions: {
+
+    fetchLeaderBoard ({commit}) {
+      firebase.firestore().collection("profile").get().then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          commit('storeLeaderBoardData', doc.data())
+        })
+      })
+    },
 
     storeTempData ({commit}, payload) {
       commit('tempData', payload)
@@ -181,6 +196,10 @@ export default new Vuex.Store({
 
     getFirebaseRegisterErrors (state) {
       return state.firebaseRegisterErrors
+    },
+
+    getLeaderBoard (state) {
+      return state.leaderBoard
     }
   }
 })

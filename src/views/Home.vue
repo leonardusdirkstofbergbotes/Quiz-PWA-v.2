@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-space-around>
-      <v-card @click="selectCategory(card.category)" height="350" max-width="300" v-for="card in quizCards" :disabled="card.free == false && user == false" :key="card.category" outlined class="hoverMe ma-4">
-            <v-img contain height="300" :src="require(`@/assets/thumbs/${card.img}.webp`)"></v-img>
+      <v-card @click="selectCategory(card.category)" max-height="350" max-width="300" v-for="card in quizCards" :disabled="card.free == false && user == false" :key="card.category" outlined class="hoverMe ma-4">
+            <v-img contain max-height="300" :src="require(`@/assets/thumbs/${card.img}.webp`)"></v-img>
             <v-card-title class="justify-center">{{card.category}}</v-card-title>
       </v-card>
   </v-layout>
