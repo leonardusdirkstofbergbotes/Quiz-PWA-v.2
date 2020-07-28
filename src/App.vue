@@ -56,14 +56,13 @@
 
     </v-navigation-drawer> <!-- Side bar ends -->
 
-    <v-app-bar app color="indigo" dark>
+    <v-app-bar dense app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
 
        <!-- If user is nog yet signed in -->
-        <v-btn v-if="user == false" text to="/register">Register<v-icon>fa-user-plus</v-icon></v-btn>
-        <v-btn v-if="user == false" text to="/login">Login<v-icon>fa-user-check</v-icon></v-btn>
+        <v-btn v-if="user == false" text to="/login">Login</v-btn>
      
 
       <v-btn text v-if="user !== false"> <!-- If user is signed in -->

@@ -32,6 +32,8 @@
 
     </v-container>
 
+
+      <v-btn to='/register'>Don't have an account yet?</v-btn>
   </v-form>
 
 </template>
@@ -76,10 +78,20 @@ export default {
     computed: {
       LoginErrors() {
         return this.$store.getters.getFirebaseLoginErrors
+      },
+
+      userSuccessfull () {
+        return this.$store.getters.getUser
       }
     },
 
     watch: {
+      userSuccessfull (value) {
+        if (value !== false) {
+          this.$router.push('/')
+        }
+      },
+
       LoginErrors (value) {
         console.log('watch errors are = ' + value)
         if (value == '') {

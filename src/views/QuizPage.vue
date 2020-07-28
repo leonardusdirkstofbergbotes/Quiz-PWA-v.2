@@ -365,6 +365,8 @@ export default {
                 if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game
                 console.log('users first game') 
                     const profileUpdateInfo = { // profile info to be send to firestore
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
@@ -380,6 +382,8 @@ export default {
 
                 else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
@@ -441,6 +445,8 @@ export default {
                 if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game
                 console.log('users first game')
                     const profileUpdateInfo = { // profile info to be send to firestore
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
@@ -454,6 +460,8 @@ export default {
                     this.$store.dispatch('sendProfileData', profileUpdateInfo)
                 } else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,
@@ -478,6 +486,8 @@ export default {
                 if (this.profileCheck == undefined && this.user !== false) { // if it is the users first game 
                 console.log('users first game')
                     const profileUpdateInfo = { // profile info to be send to firestore
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.correctCount,
                         totalQuestions: this.QuizArrayLength,
@@ -493,6 +503,8 @@ export default {
 
                 else if (this.profileCheck !== undefined && this.user !== false) { // user already has a profile
                     const profileUpdateInfo = {
+                        name: this.user.name, 
+                        surname: this.user.surname,
                         uid: this.user.uid,
                         correct: this.profileCheck.correct + this.correctCount,
                         totalQuestions: this.profileCheck.totalQuestions + this.QuizArrayLength,

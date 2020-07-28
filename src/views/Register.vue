@@ -95,10 +95,20 @@ export default {
     computed: {
       registerError () {
         return this.$store.getters.getFirebaseRegisterErrors
+      }, 
+
+      userSuccessfull () {
+        return this.$store.getters.getUser
       }
     },
 
     watch: {
+      userSuccessfull (value) {
+        if (value !== false) {
+          this.$router.push('/')
+        }
+      },
+
       registerError (value) {
         console.log('watch errors are = ' + value)
         if (value == '') {
