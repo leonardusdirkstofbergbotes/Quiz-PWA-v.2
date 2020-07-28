@@ -1,5 +1,5 @@
 <template>
-    <div id="quizWrapper">
+    <div id="quizWrapper" class="">
         <audio id="timer" preload="auto">
             <source src="@/assets/sounds/timer.mp3"></source>
         </audio>
@@ -546,10 +546,15 @@ export default {
             this.$http.get('https://opentdb.com/api.php?amount=' + this.number + '&token=' + this.sessionToken + '&category=' + this.cat + '&difficulty=' + this.difficulty + '&type=' + this.questionType + '')
             .then(response => {
                 if (response.data.response_code == 4) {
+                    let backg = document.getElementById('quizWrapper')
+                    backg.classList.remove("backImageRemovable");
                     this.$store.dispatch('setLoadState', false)
                     this.optionSelect = true
                     this.noMoreResults = true
                 } else {
+                    let backg = document.getElementById('quizWrapper')
+                    backg.classList.add("backImageRemovable");
+                    this.noMoreResults = false
                     var i = 0
                     var n = 0
                     this.countDown = 20
@@ -599,6 +604,9 @@ export default {
 </script>
 
 <style scoped>
+.backImageRemovable {
+    background-image: url('../assets/backgrounds/quizPage.webp');
+}
 
 #timerHolder {
     width: 50%;
